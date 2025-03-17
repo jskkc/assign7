@@ -7,19 +7,14 @@ import java.util.Random;
 import java.util.Scanner;
 
 
-
 public class App {
     public static void main(String[] args) throws Exception {
-        for(int te = 0; te < readFileToArray("test1.txt").length; te++) {
-            int test2[] = readFileToArray("test1.txt");
-            System.out.println(test2[te]);
-        }
         int n = 0;
         String fName = "";
         String fName2 = "";
         Scanner inputHandler = new Scanner(System.in);
-        while (n != 3) {
-            System.out.println("Please enter 1 to generate a random array. 2 to enter a filename to sort, and 3 to end the program.");
+        while (n != 4) {
+            System.out.println("Please enter 1 to generate a random array. 2 to enter a filename to sort using bubble sort, 3 to enter a filename to sort using merge sort, and 4 to end the process");
             n = inputHandler.nextInt();
             inputHandler.nextLine();
             if (n == 1) {
@@ -32,13 +27,21 @@ public class App {
                 writeArrayToFile(temp, fName);
                 //System.out.println("Saved random int array too: " + fName);
             } else if (n == 2) {
-                System.out.println("Please enter a file name including type (.txt) you'd like to sort.");
+                System.out.println("Please enter a file name including type (.txt) you'd like to sort using bubble sort.");
                 fName = inputHandler.nextLine();
                 System.out.println("Please enter a file name including type (.txt) you'd like to save the sorted array to.");
                 fName2 = inputHandler.nextLine();
                 writeArrayToFile(bubbleSort(readFileToArray(fName)), fName2);
                 System.out.println("Sorted file " + fName + " and saved too: " + fName2);
-            } else if (n != 3) {
+            } else if (n == 3) {
+                System.out.println("Please enter a file name including type (.txt) you'd like to sort using merge sort.");
+                fName = inputHandler.nextLine();
+                System.out.println("Please enter a file name including type (.txt) you'd like to save the sorted array to.");
+                fName2 = inputHandler.nextLine();
+                int temp[] = readFileToArray(fName);
+                writeArrayToFile(mergeSort(temp, 0, temp.length-1), fName2);
+                System.out.println("Sorted file " + fName + " and saved too: " + fName2);
+            } else if (n != 4) {
                 System.out.println("Error please input a valid number (1, 2, or 3)");
             }
         }
@@ -108,7 +111,6 @@ public class App {
     }
 
 
-    // Given an integer array, sort it in-place, i.e., the order of the elements will be changed so that the final array is in sorted order.
     public static int[] bubbleSort(int[] array) {
         int len = array.length;
         for (int i = 0; i < len - 1; i++) {
@@ -119,6 +121,49 @@ public class App {
                     array[j + 1] = temp;
                 }
             }
+        }
+        return array;
+    }
+    public static int[] mergeSort(int[] array, int l, int r) {
+        if (l < r) {
+            int m = l+(r-l)/2;
+            mergeSort(array, l, m);
+            mergeSort(array, m + 1, r);
+            merge(array, l, m, r);
+        }
+        return array;
+    }
+    static int[] merge(int array[], int l, int m, int r) {
+        int n1 = m - l + 1;
+        int n2 = r - m;
+        int arr1[] = new int[n1];
+        int arr2[] = new int[n2];
+        for (int i = 0; i < n1; ++i)
+            arr1[i] = array[l + i];
+        for (int j = 0; j < n2; ++j)
+            arr2[j] = array[m + 1 + j];
+        int i = 0, j = 0;
+        int k = l;
+        while (i < n1 && j < n2) {
+            if (arr1[i] <= arr2[j]) {
+                array[k] = arr1[i];
+                i++;
+            }
+            else {
+                array[k] = arr2[j];
+                j++;
+            }
+            k++;
+        }
+        while (i < n1) {
+            array[k] = arr1[i];
+            i++;
+            k++;
+        }
+        while (j < n2) {
+            array[k] = arr2[j];
+            j++;
+            k++;
         }
         return array;
     }
